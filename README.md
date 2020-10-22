@@ -83,7 +83,7 @@ st work 5 10 # Lower bound of 0, can raise a DivisionByZero error
 st work 14 53 6 -l 1 # This should always be fine, so long as numbers are within the bounds
 
 # Execute a bunch in parallel
-st work $(python -c 'import random " ".join(random.randint(1, 9999) for _ in range(random.randint(1, 20)))') --parallel
+st work $(python -c 'import random; print(" ".join(random.randint(1, 9999) for _ in range(random.randint(1, 20))))') --parallel
 
 # Use helper script to automate
 bash keep_alive.sh
