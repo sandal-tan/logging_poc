@@ -1,6 +1,6 @@
 # Stack
 
-This POC is done using [Grafana][1], [Loki+Promtail][2], and [Prometheus][3]. Each is used for the following:
+This POC is done using [Grafana](1), [Loki+Promtail](2), and [Prometheus](3). Each is used for the following:
 
 - `Promtail`: Client side log aggregation, deployed to host. Configures scraping and etl of logs
 - `Prometheus`: Label-based metric aggregation service
@@ -71,7 +71,7 @@ terraform init
 terraform apply
 ```
 
-Alternatively, [These][4] instructions can be followed, the URL should be `http://loki:3100` for docker compose.
+Alternatively, [These](4) instructions can be followed, the URL should be `http://loki:3100` for docker compose.
 
 As a source of logs, you can use `sample_tool`, which was written to test some logging scenarios. It's goal to is expose
 common situations for logging (parent-child process relationship and entry point setup), while providing actionable log
@@ -89,7 +89,7 @@ st work $(python -c 'import random " ".join(random.randint(1, 9999) for _ in ran
 bash keep_alive.sh
 ```
 
-To get a feel for Grafana, use `keep_alive.sh` to get some logs going. After you've got in running go [here][5] to view
+To get a feel for Grafana, use `keep_alive.sh` to get some logs going. After you've got in running go [here](5) to view
 the dashboard.
 
 [1](https://github.com/grafana/grafana) [2](https://github.com/grafana/loki)
