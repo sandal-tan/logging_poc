@@ -1,6 +1,8 @@
 import random
+import time
 
 from logzero import logger
+
 
 
 def search(number, lower_bound, upper_bound):
@@ -11,6 +13,7 @@ def search(number, lower_bound, upper_bound):
         bound: The upper bound of randomness
 
     """
+    start = time.time()
     logger.info("Start looking for %d", number)
     if not lower_bound <= number <= upper_bound:
         raise RuntimeError(f"Given number must be in [{lower_bound}, {upper_bound}]")
@@ -21,3 +24,5 @@ def search(number, lower_bound, upper_bound):
             break
         if number % guess == 0:
             logger.warning("Found perfect divisor of %d: %d", number, guess)
+    end = time.time()
+    logger.warning("Search duration: %f", end - start)

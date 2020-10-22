@@ -5,7 +5,7 @@ networks:
 
 services:
   loki:
-    image: grafana/loki:1.5.0
+    image: grafana/loki:1.6.1
     ports:
       - "3100:3100"
     command: -config.file=/etc/loki/local-config.yaml
@@ -13,16 +13,28 @@ services:
       - loki
 
   promtail:
-    image: grafana/promtail:1.5.0
+    image: grafana/promtail:1.6.1
     volumes:
       - ./logs:/logs
-      - ./promtail:/etc/promtail/
+      - ./promtail.yaml:/etc/promtail/docker-config.yaml:ro
+    ports:
+      - "9080:9080"
     command: -config.file=/etc/promtail/docker-config.yaml
     networks:
       - loki
 
+  prometheus:
+    image: prom/prometheus:v2.22.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+    command: --config.file=/etc/prometheus/prometheus.yaml
+    networks:
+      - loki
+
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:7.2.2
     ports:
       - "3000:3000"
     networks:

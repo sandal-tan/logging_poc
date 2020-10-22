@@ -19,6 +19,61 @@
   "links": [],
   "panels": [
     {
+      "datasource": "prometheus",
+      "description": "Updates ever minute from promtail scraping",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 9,
+        "x": 0,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.2",
+      "targets": [
+        {
+          "expr": "promtail_custom_requests_made",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Number of Requests",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
       "datasource": "loki",
       "description": "The percentage of requests for work to be done in parallel",
       "fieldConfig": {
@@ -43,9 +98,9 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 6,
-        "w": 6,
-        "x": 0,
+        "h": 9,
+        "w": 7,
+        "x": 9,
         "y": 0
       },
       "id": 2,
@@ -76,6 +131,489 @@
       "title": "Parallel Request Percentage",
       "transparent": true,
       "type": "stat"
+    },
+    {
+      "datasource": "prometheus",
+      "description": "The average size of given inputs",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 8,
+        "x": 16,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.2",
+      "targets": [
+        {
+          "expr": "promtail_custom_requests_made",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "requests made",
+          "refId": "A"
+        },
+        {
+          "expr": "promtail_custom_inputs_given",
+          "interval": "",
+          "legendFormat": "inputs given",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Average Input Size",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "Average Size of Input",
+            "binary": {
+              "left": "inputs given",
+              "operator": "/",
+              "reducer": "sum",
+              "right": "requests made"
+            },
+            "mode": "binary",
+            "reduce": {
+              "include": [],
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "stat"
+    },
+    {
+      "alert": {
+        "alertRuleTags": {},
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                15
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "30s",
+        "handler": 1,
+        "message": "High number of perfect divisors being found",
+        "name": "Perfect Divisors Found Per Second alert",
+        "noDataState": "alerting",
+        "notifications": []
+      },
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "hiddenSeries": false,
+      "id": 16,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "7.2.2",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "rate(promtail_custom_number_of_divisors_found[5m])",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "Divisors found per second",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 15
+        }
+      ],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Perfect Divisors Found Per Second",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "transformations": [],
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.2",
+      "targets": [
+        {
+          "expr": "rate(promtail_custom_number_of_errors_generated[2m])",
+          "interval": "",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Error Rate",
+      "type": "stat"
+    },
+    {
+      "datasource": "loki",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 13,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 4,
+      "options": {
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "pluginVersion": "7.2.2",
+      "targets": [
+        {
+          "expr": "{job=\"sample_tool_logs\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Application Logs",
+      "type": "logs"
+    },
+    {
+      "datasource": "loki",
+      "description": "Number of completed requests per hour",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-orange",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 9,
+        "x": 0,
+        "y": 30
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.2",
+      "targets": [
+        {
+          "expr": "count_over_time({job=\"sample_tool_logs\"} |~ `Found \\d+!`[60m])",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Input Volume Per Hour",
+      "type": "stat"
+    },
+    {
+      "dashboardFilter": "",
+      "dashboardTags": [],
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "custom": {}
+        },
+        "overrides": []
+      },
+      "folderId": null,
+      "gridPos": {
+        "h": 11,
+        "w": 7,
+        "x": 9,
+        "y": 30
+      },
+      "id": 14,
+      "limit": 10,
+      "nameFilter": "",
+      "onlyAlertsOnDashboard": true,
+      "pluginVersion": "7.2.2",
+      "show": "current",
+      "sortOrder": 1,
+      "stateFilter": [
+        "ok",
+        "paused",
+        "no_data",
+        "execution_error",
+        "alerting",
+        "pending"
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Alerts",
+      "type": "alertlist"
+    },
+    {
+      "datasource": "prometheus",
+      "fieldConfig": {
+        "defaults": {
+          "custom": {},
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "semi-dark-purple",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 8,
+        "x": 16,
+        "y": 30
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "mean"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "7.2.2",
+      "targets": [
+        {
+          "expr": "promtail_custom_total_search_time",
+          "interval": "",
+          "legendFormat": "total search time",
+          "refId": "A"
+        },
+        {
+          "expr": "promtail_custom_inputs_given",
+          "interval": "",
+          "legendFormat": "inputs given",
+          "refId": "B"
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Average Search Time",
+      "transformations": [
+        {
+          "id": "calculateField",
+          "options": {
+            "alias": "average search time in seconds",
+            "binary": {
+              "left": "total search time",
+              "operator": "/",
+              "reducer": "sum",
+              "right": "inputs given"
+            },
+            "mode": "binary",
+            "reduce": {
+              "reducer": "sum"
+            },
+            "replaceFields": true
+          }
+        }
+      ],
+      "type": "stat"
     }
   ],
   "refresh": "5s",
@@ -92,6 +630,6 @@
   "timepicker": {},
   "timezone": "",
   "title": "POC Dashboard",
-  "uid": "mXDrMOpGk",
-  "version": 1
+  "uid": "uYMgpKpMz",
+  "version": 12
 }
