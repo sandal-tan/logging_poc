@@ -53,7 +53,7 @@ LOG_FILE: str = "./logs/sample_tool.log"
 
 
 def setup_logging(n, lower_bound, upper_bound):
-    logzero.logfile(LOG_FILE, maxBytes=1e6, backupCount=3, loglevel=logging.INFO)
+    logzero.logfile(LOG_FILE, loglevel=logging.INFO)
     search(n, lower_bound, upper_bound)
 
 
@@ -63,7 +63,7 @@ def cli(log_file: str):
     if not os.path.exists(os.path.dirname(log_file)):
         logger.debug("%s does not exist -- creating.", os.path.dirname(log_file))
         os.makedirs(os.path.dirname(log_file))
-    logzero.logfile(log_file, maxBytes=1e6, backupCount=3, loglevel=logging.INFO)
+    logzero.logfile(log_file, maxBytes=256 * 1e6, backupCount=3, loglevel=logging.INFO)
     logger.debug("Logging to %s", log_file)
 
 

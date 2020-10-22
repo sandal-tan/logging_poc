@@ -10,9 +10,20 @@ clients:
 
 scrape_configs:
 - job_name: system
+  #pipeline_stages:
+    #- regex:
+        #expression: "Length of input: (?P<length_of_input>\d+)"
+    ## Need to setup prometheus for this
+    #- metrics:
+        #inputs_given:
+          #type: Counter
+          #description: "The number of inputs"
+          #source: length_of_input
+          #config:
+            #action: add
   static_configs:
   - targets:
       - localhost
     labels:
       job: sample_tool_logs
-      __path__: /logs/*log
+      __path__: /logs/*.log*
